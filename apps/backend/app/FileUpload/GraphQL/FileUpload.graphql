@@ -1,0 +1,7 @@
+type SignedStorageUrl {
+    url: String!
+    uuid: String!
+    bucket: String!
+    key: String!
+    headers: Mixed!
+}

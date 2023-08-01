@@ -1,0 +1,9 @@
+mutation CreateSignedUploadUrl {
+  createSignedStorageUrl {
+    uuid
+    url
+    key
+    bucket
+    headers
+  }
+}

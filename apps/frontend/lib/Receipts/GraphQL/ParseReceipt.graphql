@@ -1,0 +1,17 @@
+query ParseReceipt($url: String!) {
+    parseFile(url: $url) {
+        reference
+        amount_subtotal
+        amount_tax
+        amount_total
+        paid_at
+        paid_to
+        line_items {
+            name
+            amount
+            code
+            quantity
+            unit_price
+        }
+    }
+}
