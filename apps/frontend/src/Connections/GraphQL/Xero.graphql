@@ -1,0 +1,7 @@
+mutation CreateXeroAccountLink($redirectUrl: String!) {
+  xeroAccountLink(redirect_url: $redirectUrl)
+}
+
+mutation SyncXeroReceipt($input: ReceiptInput!) {
+  xeroSyncReceipt(input: $input)
+}

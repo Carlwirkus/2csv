@@ -1,5 +1,4 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { ParseReceiptQuery } from "@/generated";
+import { ReceiptInput } from "@/generated";
 
 type Column =
   | "reference"
@@ -11,7 +10,7 @@ type Column =
   | "line_items";
 const columns: {
   [key in Column]: {
-    process: (value: ParseReceiptQuery["parseFile"]) => string;
+    process: (value: ReceiptInput) => string;
   };
 } = {
   reference: {
@@ -43,17 +42,12 @@ const columns: {
 };
 
 export function useExportToCsv() {
-  const queryClient = useQueryClient();
-
-  return () => {
-    const data = queryClient
-      .getQueriesData<ParseReceiptQuery>(["ParseReceipt"])
-      .map(([, item]) => {
-        if (!item) return null;
-
+  return (inputs: ReceiptInput[]) => {
+    const data = inputs
+      .map((item) => {
         return Object.keys(columns)
           .map((key) => {
-            return columns[key as Column].process(item.parseFile);
+            return columns[key as Column].process(item);
           })
           .map(String) // convert every value to String
           .map((v) => v.replaceAll('"', '""')) // escape double colons

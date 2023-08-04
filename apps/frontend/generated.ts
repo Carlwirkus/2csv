@@ -1,4 +1,4 @@
-import { useMutation, useQuery, UseMutationOptions, UseQueryOptions } from '@tanstack/react-query';
+import { useQuery, useMutation, UseQueryOptions, UseMutationOptions } from '@tanstack/react-query';
 import { fetcher } from '@/lib/GraphQL/fetcher';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
@@ -18,9 +18,27 @@ export type Scalars = {
   Mixed: { input: any; output: any; }
 };
 
+export type Connections = {
+  __typename?: 'Connections';
+  quick_books: Scalars['Boolean']['output'];
+  xero: Scalars['Boolean']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createSignedStorageUrl: SignedStorageUrl;
+  xeroAccountLink: Scalars['String']['output'];
+  xeroSyncReceipt: Scalars['String']['output'];
+};
+
+
+export type MutationXeroAccountLinkArgs = {
+  redirect_url: Scalars['String']['input'];
+};
+
+
+export type MutationXeroSyncReceiptArgs = {
+  input: ReceiptInput;
 };
 
 /** Allows ordering a list of records. */
@@ -51,56 +69,15 @@ export enum OrderByRelationWithColumnAggregateFunction {
   Sum = 'SUM'
 }
 
-/** Information about pagination using a fully featured paginator. */
-export type PaginatorInfo = {
-  __typename?: 'PaginatorInfo';
-  /** Number of items in the current page. */
-  count: Scalars['Int']['output'];
-  /** Index of the current page. */
-  currentPage: Scalars['Int']['output'];
-  /** Index of the first item in the current page. */
-  firstItem?: Maybe<Scalars['Int']['output']>;
-  /** Are there more pages after this one? */
-  hasMorePages: Scalars['Boolean']['output'];
-  /** Index of the last item in the current page. */
-  lastItem?: Maybe<Scalars['Int']['output']>;
-  /** Index of the last available page. */
-  lastPage: Scalars['Int']['output'];
-  /** Number of items per page. */
-  perPage: Scalars['Int']['output'];
-  /** Number of total available items. */
-  total: Scalars['Int']['output'];
-};
-
-/** Indicates what fields are available at the top level of a query operation. */
 export type Query = {
   __typename?: 'Query';
+  connections: Connections;
   parseFile: Receipt;
-  /** Find a single user by an identifying attribute. */
-  user?: Maybe<User>;
-  /** List multiple users. */
-  users: UserPaginator;
 };
 
 
-/** Indicates what fields are available at the top level of a query operation. */
 export type QueryParseFileArgs = {
   url: Scalars['String']['input'];
-};
-
-
-/** Indicates what fields are available at the top level of a query operation. */
-export type QueryUserArgs = {
-  email?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['ID']['input']>;
-};
-
-
-/** Indicates what fields are available at the top level of a query operation. */
-export type QueryUsersArgs = {
-  first?: Scalars['Int']['input'];
-  name?: InputMaybe<Scalars['String']['input']>;
-  page?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Receipt = {
@@ -114,6 +91,16 @@ export type Receipt = {
   reference?: Maybe<Scalars['String']['output']>;
 };
 
+export type ReceiptInput = {
+  amount_subtotal?: InputMaybe<Scalars['Float']['input']>;
+  amount_tax?: InputMaybe<Scalars['Float']['input']>;
+  amount_total?: InputMaybe<Scalars['Float']['input']>;
+  line_items: Array<ReceiptLineItemInput>;
+  paid_at?: InputMaybe<Scalars['String']['input']>;
+  paid_to?: InputMaybe<Scalars['String']['input']>;
+  reference?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type ReceiptLineItem = {
   __typename?: 'ReceiptLineItem';
   amount?: Maybe<Scalars['Float']['output']>;
@@ -121,6 +108,14 @@ export type ReceiptLineItem = {
   name?: Maybe<Scalars['String']['output']>;
   quantity?: Maybe<Scalars['Float']['output']>;
   unit_price?: Maybe<Scalars['Float']['output']>;
+};
+
+export type ReceiptLineItemInput = {
+  amount: Scalars['Float']['input'];
+  code?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  quantity: Scalars['Float']['input'];
+  unit_price: Scalars['Float']['input'];
 };
 
 export type SignedStorageUrl = {
@@ -150,36 +145,11 @@ export enum Trashed {
   Without = 'WITHOUT'
 }
 
-/** Account of a person who utilizes this application. */
-export type User = {
-  __typename?: 'User';
-  /** When the account was created. */
-  created_at: Scalars['DateTime']['output'];
-  /** Unique email address. */
-  email: Scalars['String']['output'];
-  /** When the email was verified. */
-  email_verified_at?: Maybe<Scalars['DateTime']['output']>;
-  /** Unique primary key. */
+export type XeroAccount = {
+  __typename?: 'XeroAccount';
   id: Scalars['ID']['output'];
-  /** Non-unique name. */
-  name: Scalars['String']['output'];
-  /** When the account was last updated. */
-  updated_at: Scalars['DateTime']['output'];
+  xero_tenant_id: Scalars['String']['output'];
 };
-
-/** A paginated list of User items. */
-export type UserPaginator = {
-  __typename?: 'UserPaginator';
-  /** A list of User items. */
-  data: Array<User>;
-  /** Pagination information about the list of items. */
-  paginatorInfo: PaginatorInfo;
-};
-
-export type CreateSignedUploadUrlMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type CreateSignedUploadUrlMutation = { __typename?: 'Mutation', createSignedStorageUrl: { __typename?: 'SignedStorageUrl', uuid: string, url: string, key: string, bucket: string, headers: any } };
 
 export type ParseReceiptQueryVariables = Exact<{
   url: Scalars['String']['input'];
@@ -188,27 +158,31 @@ export type ParseReceiptQueryVariables = Exact<{
 
 export type ParseReceiptQuery = { __typename?: 'Query', parseFile: { __typename?: 'Receipt', reference?: string | null, amount_subtotal?: number | null, amount_tax?: number | null, amount_total?: number | null, paid_at?: string | null, paid_to?: string | null, line_items: Array<{ __typename?: 'ReceiptLineItem', name?: string | null, amount?: number | null, code?: string | null, quantity?: number | null, unit_price?: number | null }> } };
 
+export type ConnectionsQueryVariables = Exact<{ [key: string]: never; }>;
 
-export const CreateSignedUploadUrlDocument = `
-    mutation CreateSignedUploadUrl {
-  createSignedStorageUrl {
-    uuid
-    url
-    key
-    bucket
-    headers
-  }
-}
-    `;
-export const useCreateSignedUploadUrlMutation = <
-      TError = unknown,
-      TContext = unknown
-    >(options?: UseMutationOptions<CreateSignedUploadUrlMutation, TError, CreateSignedUploadUrlMutationVariables, TContext>) =>
-    useMutation<CreateSignedUploadUrlMutation, TError, CreateSignedUploadUrlMutationVariables, TContext>(
-      ['CreateSignedUploadUrl'],
-      (variables?: CreateSignedUploadUrlMutationVariables) => fetcher<CreateSignedUploadUrlMutation, CreateSignedUploadUrlMutationVariables>(CreateSignedUploadUrlDocument, variables)(),
-      options
-    );
+
+export type ConnectionsQuery = { __typename?: 'Query', connections: { __typename?: 'Connections', quick_books: boolean, xero: boolean } };
+
+export type CreateXeroAccountLinkMutationVariables = Exact<{
+  redirectUrl: Scalars['String']['input'];
+}>;
+
+
+export type CreateXeroAccountLinkMutation = { __typename?: 'Mutation', xeroAccountLink: string };
+
+export type SyncXeroReceiptMutationVariables = Exact<{
+  input: ReceiptInput;
+}>;
+
+
+export type SyncXeroReceiptMutation = { __typename?: 'Mutation', xeroSyncReceipt: string };
+
+export type CreateSignedUploadUrlMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CreateSignedUploadUrlMutation = { __typename?: 'Mutation', createSignedStorageUrl: { __typename?: 'SignedStorageUrl', uuid: string, url: string, key: string, bucket: string, headers: any } };
+
+
 export const ParseReceiptDocument = `
     query ParseReceipt($url: String!) {
   parseFile(url: $url) {
@@ -238,5 +212,73 @@ export const useParseReceiptQuery = <
     useQuery<ParseReceiptQuery, TError, TData>(
       ['ParseReceipt', variables],
       fetcher<ParseReceiptQuery, ParseReceiptQueryVariables>(ParseReceiptDocument, variables),
+      options
+    );
+export const ConnectionsDocument = `
+    query Connections {
+  connections {
+    quick_books
+    xero
+  }
+}
+    `;
+export const useConnectionsQuery = <
+      TData = ConnectionsQuery,
+      TError = unknown
+    >(
+      variables?: ConnectionsQueryVariables,
+      options?: UseQueryOptions<ConnectionsQuery, TError, TData>
+    ) =>
+    useQuery<ConnectionsQuery, TError, TData>(
+      variables === undefined ? ['Connections'] : ['Connections', variables],
+      fetcher<ConnectionsQuery, ConnectionsQueryVariables>(ConnectionsDocument, variables),
+      options
+    );
+export const CreateXeroAccountLinkDocument = `
+    mutation CreateXeroAccountLink($redirectUrl: String!) {
+  xeroAccountLink(redirect_url: $redirectUrl)
+}
+    `;
+export const useCreateXeroAccountLinkMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateXeroAccountLinkMutation, TError, CreateXeroAccountLinkMutationVariables, TContext>) =>
+    useMutation<CreateXeroAccountLinkMutation, TError, CreateXeroAccountLinkMutationVariables, TContext>(
+      ['CreateXeroAccountLink'],
+      (variables?: CreateXeroAccountLinkMutationVariables) => fetcher<CreateXeroAccountLinkMutation, CreateXeroAccountLinkMutationVariables>(CreateXeroAccountLinkDocument, variables)(),
+      options
+    );
+export const SyncXeroReceiptDocument = `
+    mutation SyncXeroReceipt($input: ReceiptInput!) {
+  xeroSyncReceipt(input: $input)
+}
+    `;
+export const useSyncXeroReceiptMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<SyncXeroReceiptMutation, TError, SyncXeroReceiptMutationVariables, TContext>) =>
+    useMutation<SyncXeroReceiptMutation, TError, SyncXeroReceiptMutationVariables, TContext>(
+      ['SyncXeroReceipt'],
+      (variables?: SyncXeroReceiptMutationVariables) => fetcher<SyncXeroReceiptMutation, SyncXeroReceiptMutationVariables>(SyncXeroReceiptDocument, variables)(),
+      options
+    );
+export const CreateSignedUploadUrlDocument = `
+    mutation CreateSignedUploadUrl {
+  createSignedStorageUrl {
+    uuid
+    url
+    key
+    bucket
+    headers
+  }
+}
+    `;
+export const useCreateSignedUploadUrlMutation = <
+      TError = unknown,
+      TContext = unknown
+    >(options?: UseMutationOptions<CreateSignedUploadUrlMutation, TError, CreateSignedUploadUrlMutationVariables, TContext>) =>
+    useMutation<CreateSignedUploadUrlMutation, TError, CreateSignedUploadUrlMutationVariables, TContext>(
+      ['CreateSignedUploadUrl'],
+      (variables?: CreateSignedUploadUrlMutationVariables) => fetcher<CreateSignedUploadUrlMutation, CreateSignedUploadUrlMutationVariables>(CreateSignedUploadUrlDocument, variables)(),
       options
     );

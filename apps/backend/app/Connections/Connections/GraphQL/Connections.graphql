@@ -1,0 +1,8 @@
+type Connections {
+    xero: Boolean!
+    quick_books: Boolean!
+}
+
+extend type Query {
+    connections: Connections! @field(resolver: "App\\Connections\\Connections\\GraphQL\\Queries\\ConnectionsQuery") @guard
+}

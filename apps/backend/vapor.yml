@@ -1,0 +1,16 @@
+id: 50314
+name: 2csv
+environments:
+  production:
+    database: csv
+    domain: api.2csv.net
+    storage: 2csv-prod
+    memory: 1024
+    cli-memory: 512
+    runtime: "php-8.2:al2"
+    build:
+      - "COMPOSER_MIRROR_PATH_REPOS=1 composer install --no-dev"
+      - "php artisan event:cache"
+      - "php artisan lighthouse:cache"
+    deploy:
+      - "php artisan migrate --force"

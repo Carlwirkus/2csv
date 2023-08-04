@@ -2,9 +2,13 @@
 
 namespace App\Receipts\Services;
 
+use App\Receipts\Notifications\ReceiptNotification;
 use Aws\Result;
 use Aws\Textract\TextractClient;
+use Exception;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Notification;
 use JmesPath\Env as JmesPath;
 
 class ReceiptService
@@ -16,6 +20,12 @@ class ReceiptService
 
     public function analyzeExpense(string $url): array
     {
+        if (app()->isProduction()) {
+            Notification::route("discord", null)->notify(
+                new ReceiptNotification("New upload: $url")
+            );
+        }
+
         $client = $this->getClient();
         $res = $client->analyzeExpense([
             "Document" => [
@@ -41,7 +51,11 @@ class ReceiptService
                 $this->getSummaryKey($result, "SUBTOTAL", "float") ?? 0,
             "paid_to" => $this->getSummaryKey($result, "NAME"),
             "reference" => $this->getSummaryKey($result, "INVOICE_RECEIPT_ID"),
-            "paid_at" => $this->getSummaryKey($result, "INVOICE_RECEIPT_DATE"),
+            "paid_at" => $this->getSummaryKey(
+                $result,
+                "INVOICE_RECEIPT_DATE",
+                "date"
+            ),
         ];
     }
 
@@ -106,6 +120,10 @@ class ReceiptService
             return $this->cleanFloat($res);
         }
 
+        if ($format === "date") {
+            return $this->cleanDate($res);
+        }
+
         return $res;
     }
 
@@ -116,5 +134,18 @@ class ReceiptService
         }
 
         return (float) preg_replace("/[^0-9.]/", "", $float);
+    }
+
+    private function cleanDate(string|null $date): string|null
+    {
+        if ($date === null) {
+            return null;
+        }
+
+        try {
+            return Carbon::parse($date)->format("Y-m-d");
+        } catch (Exception $e) {
+            return null;
+        }
     }
 }

@@ -1,5 +1,12 @@
 <?php
 
+use App\Connections\Xero\Account\Providers\XeroAccountServiceProvider;
+use App\System\Providers\AppServiceProvider;
+use App\System\Providers\AuthServiceProvider;
+use App\System\Providers\EventServiceProvider;
+use App\System\Providers\RouteServiceProvider;
+use App\System\Providers\VaporUiServiceProvider;
+use App\Users\Authentication\Providers\AuthenticationServiceProvider;
 use Aws\Laravel\AwsServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
@@ -161,17 +168,19 @@ return [
             /*
              * Package Service Providers...
              */
+            AwsServiceProvider::class,
 
             /*
              * Application Service Providers...
              */
-            App\Providers\AppServiceProvider::class,
-            App\Providers\AuthServiceProvider::class,
-            // App\Providers\BroadcastServiceProvider::class,
-            App\Providers\EventServiceProvider::class,
-            App\Providers\RouteServiceProvider::class,
-            AwsServiceProvider::class,
+            AppServiceProvider::class,
+            AuthServiceProvider::class,
+            EventServiceProvider::class,
+            RouteServiceProvider::class,
+            VaporUiServiceProvider::class,
             LighthouseServiceProvider::class,
+            AuthenticationServiceProvider::class,
+            XeroAccountServiceProvider::class,
         ])
         ->toArray(),
 

@@ -1,0 +1,40 @@
+type Receipt {
+    reference: String
+    paid_to: String
+    paid_at: String
+
+    amount_total: Float
+    amount_tax: Float
+    amount_subtotal: Float
+
+    line_items: [ReceiptLineItem!]!
+}
+
+type ReceiptLineItem {
+    name: String
+    quantity: Float
+    unit_price: Float
+    amount: Float
+    code: String
+}
+
+
+input ReceiptInput {
+    reference: String
+    paid_to: String
+    paid_at: String
+
+    amount_total: Float
+    amount_tax: Float
+    amount_subtotal: Float
+
+    line_items: [ReceiptLineItemInput!]!
+}
+
+input ReceiptLineItemInput {
+    name: String
+    quantity: Float!
+    unit_price: Float!
+    amount: Float!
+    code: String
+}

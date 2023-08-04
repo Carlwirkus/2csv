@@ -3,7 +3,6 @@
 use Aws\Laravel\AwsServiceProvider;
 
 return [
-
     /*
     |--------------------------------------------------------------------------
     | AWS SDK Configuration
@@ -16,13 +15,11 @@ return [
     | http://docs.aws.amazon.com/aws-sdk-php/v3/guide/guide/configuration.html
     |
     */
-    'credentials' => [
-        'key'    => env('AWS_ACCESS_KEY_ID', ''),
-        'secret' => env('AWS_SECRET_ACCESS_KEY', ''),
+    "credentials" => [
+        "key" => env("AWS_SERVICES_ACCESS_KEY_ID", ""),
+        "secret" => env("AWS_SERVICES_SECRET_ACCESS_KEY", ""),
     ],
-    'region' => env('AWS_REGION', 'us-west-2'),
-    'version' => 'latest',
-    'ua_append' => [
-        'L5MOD/' . AwsServiceProvider::VERSION,
-    ],
+    "region" => env("AWS_REGION", "us-west-2"),
+    "version" => "latest",
+    "ua_append" => ["L5MOD/" . AwsServiceProvider::VERSION],
 ];

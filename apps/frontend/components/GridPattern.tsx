@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 function Block({ x, y, ...props }: any) {
@@ -14,7 +14,7 @@ function Block({ x, y, ...props }: any) {
 }
 
 export function GridPattern({ yOffset = 0, interactive = false, ...props }) {
-  let id = useId();
+  let id = "background-tile-pattern";
   let ref = useRef<any>();
   let currentBlock = useRef<any>();
   let counter = useRef(0);

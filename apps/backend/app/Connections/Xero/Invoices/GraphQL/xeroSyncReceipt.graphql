@@ -1,0 +1,6 @@
+extend type Mutation {
+  xeroSyncReceipt(input: ReceiptInput!): String!
+    @field(
+      resolver: "\\App\\Connections\\Xero\\Invoices\\GraphQL\\Mutations\\XeroSyncReceiptMutation"
+    )
+}

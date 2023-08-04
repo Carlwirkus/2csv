@@ -14,7 +14,16 @@ export function HomeScreen() {
           setImageUrls((old) => [...old, ...uploads]);
         }}
       />
-      <ReceiptPreview uploads={imageUrls} />
+      <ReceiptPreview
+        uploads={imageUrls}
+        onDelete={(idx) => {
+          setImageUrls((old) => {
+            const copy = [...old];
+            copy.splice(idx, 1);
+            return copy;
+          });
+        }}
+      />
     </div>
   );
 }

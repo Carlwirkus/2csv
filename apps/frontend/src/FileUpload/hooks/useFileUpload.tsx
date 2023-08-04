@@ -43,21 +43,16 @@ export function useFileUpload() {
         const { createSignedStorageUrl } = await mutateAsync({});
         const headers = createSignedStorageUrl.headers;
 
-        if ("Host" in headers) {
-          delete headers.Host;
-        }
-
         //Upload the file
         await axios.put(createSignedStorageUrl.url, file, {
           signal: controller.signal,
           headers: {
-            ...createSignedStorageUrl.headers,
+            ...headers,
+            Host: undefined,
             "Content-Type": file.type,
           },
           withCredentials: false,
           onUploadProgress: (progressEvent) => {
-            console.log(progressEvent);
-
             update({
               id,
               description: (

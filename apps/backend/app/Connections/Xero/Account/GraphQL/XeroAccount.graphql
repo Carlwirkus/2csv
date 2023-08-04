@@ -1,0 +1,16 @@
+type XeroAccount @model(class: "\\App\\Connections\\Xero\\Account\\XeroAccount") {
+  id: ID!
+  xero_tenant_id: String!
+}
+
+extend type Mutation {
+  xeroAccountLink(redirect_url: String!): String!
+    @field(
+      resolver: "\\App\\Connections\\Xero\\Account\\GraphQL\\Mutations\\CreateXeroAccountLinkMutation"
+    ) @guard
+
+#  xeroRemoveConnection: XeroAccount!
+#    @field(
+#      resolver: "\\App\\Connections\\Xero\\Account\\GraphQL\\Mutations\\RemoveXeroConnectionMutation"
+#    )
+}
